@@ -1,12 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; // Import Firebase authentication methods
+import { getAuth, signInWithEmailAndPassword, AuthErrorCodes } from 'firebase/auth';
 
 function Signin() {
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
     const router = useRouter();
+    const [error, setError] = useState(null);
 
     const handleLogin = async () => {
         const userEmail = emailRef.current.value;
@@ -22,13 +23,27 @@ function Signin() {
             }
         } catch (error) {
             console.error('Error signing in:', error);
-            // Handle error - Show error message or perform necessary actions
+
+            // Handle specific error codes
+            switch (error.code) {
+                case AuthErrorCodes.INVALID_EMAIL:
+                case AuthErrorCodes.USER_NOT_FOUND:
+                    setError('Incorrect email. Please check your email.');
+                    break;
+                case AuthErrorCodes.WRONG_PASSWORD:
+                    setError('Incorrect password. Please check your password.');
+                    break;
+                default:
+                    setError('An error occurred while signing in. Please try again.');
+                    break;
+            }
         }
     };
 
     return (
         <div className='h-screen overflow-y-hidden flex flex-col justify-center items-center pt-16'>
             <p className='text-3xl font-bold pb-3'>Login Page</p>
+            {error && <p className='text-red-500'>{error}</p>}
             <div>
                 <label>Email: </label>
                 <input className='border-[1px] pl-3' placeholder='Email' type='email' ref={emailRef} />
