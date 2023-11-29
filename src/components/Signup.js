@@ -23,11 +23,27 @@ function Signup() {
 
                 console.log('User signed up:', user);
                 localStorage.setItem("email", user.email);
-                router.push('/signin'); // Redirect to signin page
+                router.push('/signin'); 
             })
             .catch((error) => {
-                setError(error.message); 
+                setError(error.message);
             });
+
+        if (!userEmail || !userPassword) {
+            setError('Email and password should not be empty.');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(userEmail)) {
+            setError('Please enter a valid email address.');
+            return;
+        }
+
+        if (userPassword.length < 6) {
+            setError('Password should be at least 6 characters long.');
+            return;
+        }
     };
 
     const handleGoogleSignup = () => {
@@ -36,20 +52,21 @@ function Signup() {
                 const user = userCredential.user;
                 console.log('User signed in with Google:', user);
                 localStorage.setItem("email", user.email);
-                router.push('/signin'); // Redirect to signin page
+                router.push('/signin'); 
             })
             .catch((error) => {
-                setError(error.message); 
+                setError(error.message);
             });
     };
 
     return (
         <div className='h-screen overflow-y-hidden'>
-            {error && <p>Error: {error}</p>}
             <div className='flex flex-col justify-center items-center mt-40'>
                 <button className='p-3 border-gray-400 border-[1px]' onClick={handleGoogleSignup}>
                     Sign up with Google
                 </button><br /><br />
+
+                {error && <p className='text-red-500'>{error}</p>}
 
                 <div>
                     <label>Name: </label>

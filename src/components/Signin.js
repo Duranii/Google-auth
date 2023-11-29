@@ -12,7 +12,26 @@ function Signin() {
     const handleLogin = async () => {
         const userEmail = emailRef.current.value;
         const userPassword = passwordRef.current.value;
-
+    
+        // Check if email and password are empty
+        if (!userEmail || !userPassword) {
+            setError('Email and password should not be empty.');
+            return;
+        }
+    
+        // Check if the email is in a valid format using regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(userEmail)) {
+            setError('Please enter a valid email address.');
+            return;
+        }
+    
+        // Check if the password meets the minimum character length
+        if (userPassword.length < 6) {
+            setError('Password should be at least 6 characters long.');
+            return;
+        }
+    
         try {
             const auth = getAuth(); // Get Firebase Auth instance
             const userCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword);
@@ -23,7 +42,7 @@ function Signin() {
             }
         } catch (error) {
             console.error('Error signing in:', error);
-
+    
             // Handle specific error codes
             switch (error.code) {
                 case AuthErrorCodes.INVALID_EMAIL:
@@ -39,7 +58,7 @@ function Signin() {
             }
         }
     };
-
+    
     return (
         <div className='h-screen overflow-y-hidden flex flex-col justify-center items-center pt-16'>
             <p className='text-3xl font-bold pb-3'>Login Page</p>
