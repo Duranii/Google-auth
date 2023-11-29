@@ -35,15 +35,13 @@ function Signin() {
         try {
             const auth = getAuth(); // Get Firebase Auth instance
             const userCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword);
-            
-            // If sign-in successful, navigate to home
+
             if (userCredential) {
                 router.push('/home');
             }
         } catch (error) {
             console.error('Error signing in:', error);
-    
-            // Handle specific error codes
+
             switch (error.code) {
                 case AuthErrorCodes.INVALID_EMAIL:
                 case AuthErrorCodes.USER_NOT_FOUND:

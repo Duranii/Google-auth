@@ -26,7 +26,7 @@ function Signup() {
                 router.push('/signin'); 
             })
             .catch((error) => {
-                setError(error.message);
+                
             });
 
         if (!userEmail || !userPassword) {
